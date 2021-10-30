@@ -1,8 +1,9 @@
 subjects = []
 
 class Subject:
-    def __init__(self,name,kred,stat):
+    def __init__(self,name, code, kred, stat):
         self.name = name
+        self.code = code
         self.kred = kred #pocet kreditu
         self.stat = stat #statistika uspechu
     def kredits(self):
@@ -18,14 +19,26 @@ class Subject:
     def jadro_v1(self):
         part = ((self.jadro_v1_kred() + self.jadro_v1_stat())/2)
         return part
+    def jadro_v2(self):
+        a = tests()
+        b = subjective()
+        func_results = []
+        subj_results = []
+        for i in a:
+            func_results.append(a[i])
+        for i in a:
+            subj_results.append(b[i])    
+        part = (func_results[subjects.index(self)] + subj_results[subjects.index(self)])/2    
+        return part 
+
 
 
 
 ################################################################################
 '''Subjects: *kod predmetu* = Subject(*pocet kreditu*, *procent NEuspechu*):'''
-laga = Subject('Lineární algebra', 7,40); subjects.append(laga)
-uela = Subject('Úvod do elektrotechniky',4,5); subjects.append(uela)
-ma1a = Subject('Matematická analýza',6,20); subjects.append(ma1a)
+laga = Subject('Lineární algebra','laga', 7, 40); subjects.append(laga)
+uela = Subject('Úvod do elektrotechniky','uela', 4, 5); subjects.append(uela)
+ma1a = Subject('Matematická analýza','ma1a', 6, 20); subjects.append(ma1a)
 
 allkredits = 7 + 4 + 6
 allstats = 40 + 5 + 20
@@ -45,4 +58,25 @@ def subjective():
         part_subjective = subject.jadro_v1() * subject.delta_multiply
         parts_subjectives[subject] = part_subjective
     return parts_subjectives
+
+def tests(): 
+    bods = []
+    for subject in subjects:
+        subject.bod = int(input('Jaký máte poslední výsledek ze předmětu "{}"? Uveďte výsledek v procentech (P.S. Jestli nemáte žádný výsledek, uveďte v procentech svůj subjektivní pocit ze předmětu):'.format(subject.name)))
+        bods.append(subject.bod)
+    for subject in subjects:
+        subject.procent = subject.bod/sum(bods)*100 
+    goal_procent = 100/len(bods)
+    parts_subjectives = {}
+    for subject in subjects:
+        subject.delta_multiply = 1 + (goal_procent - subject.procent)/100
+        part_subjective = subject.jadro_v1() * subject.delta_multiply
+        parts_subjectives[subject] = part_subjective
+    return parts_subjectives
+
+while True:
+    cmd = input('cmd:') # /jadro
+    if cmd == '/jadro':
+        for subject in subjects:
+            print(subject.jadro_v2(),end='/')
 
