@@ -1,3 +1,5 @@
+import sqlite3
+
 subjects = []
 
 class Subject:
@@ -30,6 +32,35 @@ class Subject:
             subj_results.append(b[i])    
         part = (func_results[subjects.index(self)] + subj_results[subjects.index(self)])/2    
         return part 
+
+
+class DATABASE:
+
+    def __init__(self, file_db):
+        self.connect = sqlite3.connect(file_db)
+        self.cursor = self.connect.cursor()
+
+    def user_check(self, user):
+        result = self.cursor.execute("SELECT 'id' FROM 'users' WHERE 'user' = ?",(user,))
+        return bool(len(result.fetchall()))
+
+    def get_user_id(self,user):
+        user_id = self.cursor.execute("SELECT 'id' FROM 'users' WHERE 'user' = ?",(user,))
+        return user_id.fetchone()[0]
+
+    def add_user(self, user):
+        self.cursor.execute("INSERT INTO 'users' ('user') VALUES (?)",(user,))
+        return self.connect.commit()
+
+    def add_subject(self,subject):
+        pass
+        """
+        EDIT HERE!!!
+        """
+    
+
+    def close(self):
+        self.connect.close()
 
 
 
@@ -73,10 +104,8 @@ def tests():
         part_subjective = subject.jadro_v1() * subject.delta_multiply
         parts_subjectives[subject] = part_subjective
     return parts_subjectives
-
-while True:
-    cmd = input('cmd:') # /jadro
-    if cmd == '/jadro':
-        for subject in subjects:
-            print(subject.jadro_v2(),end='/')
+""" 
+database = DATABASE('database.db')
+database.add_user('GOAL')
+"""
 
