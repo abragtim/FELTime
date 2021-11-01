@@ -39,14 +39,15 @@ class Client(DATABASE):
         password = str(input('Password:'))
         self.cursor.execute(f"SELECT user FROM users WHERE user = '{login}'")
         if self.cursor.fetchone() != None:
-            check_password = self.cursor.execute(f"SELECT password FROM users WHERE user = '{login}'")
+            self.cursor.execute(f"SELECT password FROM users WHERE user = '{login}'")
+            check_password = str(self.cursor.fetchone()[0])
             if check_password == password:
-                return bool(len(loginned)) # НЕ РАБОТАЕТ!!!!
+                pass # add to loginned
+                return bool(len(loginned)) # РФАБОТАЕТ
+
             else:
-                print('Stop')
                 pass
         else:
-            print('StOP')
             pass
 
 class Subject:
