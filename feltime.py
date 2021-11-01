@@ -12,21 +12,42 @@ class DATABASE:
         self.connect.close()
 
 class Client(DATABASE):
-    def __init__(self,user,file_db):
+    def __init__(self, file_db):
         super().__init__(file_db)
-        self.user = user 
+
+    def add_user(self, user, password):
+        self.user = user
+        try: 
+            self.cursor.execute("INSERT INTO 'users' ('user') VALUES (?)",(self.user,))
+            self.cursor.execute(f"UPDATE users SET password = {password} WHERE user = '{self.user}'")
+        except sqlite3.IntegrityError:
+            print('Login už existuje. Zkuste jiný.')
+            self.add_user(str(input('Login:')), str(input('Password:')))
+        return self.connect.commit() 
 
     def user_check(self):
-        result = self.cursor.execute("SELECT 'id' FROM 'users' WHERE 'user' = ?",(self.user,))
+        result = self.cursor.execute(f"SELECT id FROM users WHERE user = '{self.user}'")
         return bool(len(result.fetchall()))
 
     def get_user_id(self):
-        user_id = self.cursor.execute("SELECT 'id' FROM 'users' WHERE 'user' = ?",(self.user,))
+        user_id = self.cursor.execute(f"SELECT id FROM users WHERE user = '{self.user}'")
         return user_id.fetchone()[0]
 
-    def add_user(self):
-        self.cursor.execute("INSERT INTO 'users' ('user') VALUES (?)",(self.user,))
-        return self.connect.commit()
+    def login(self):
+        loginned = []
+        login = str(input('Login:'))
+        password = str(input('Password:'))
+        self.cursor.execute(f"SELECT user FROM users WHERE user = '{login}'")
+        if self.cursor.fetchone() != None:
+            check_password = self.cursor.execute(f"SELECT password FROM users WHERE user = '{login}'")
+            if check_password == password:
+                return bool(len(loginned)) # НЕ РАБОТАЕТ!!!!
+            else:
+                print('Stop')
+                pass
+        else:
+            print('StOP')
+            pass
 
 class Subject:
     def __init__(self,name, code, kred, stat):
@@ -119,3 +140,10 @@ allkredits = 7 + 4 + 6
 allstats = 40 + 5 + 20
 
 #################################################################################
+database = DATABASE('database.db')
+client = Client('database.db')
+data = Data('database.db')
+
+while True:
+    client.login()
+    
