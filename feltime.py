@@ -8,6 +8,32 @@ class DATABASE:
         self.connect = sqlite3.connect(file_db)
         self.cursor = self.connect.cursor()
 
+    def synch_tables(self):
+        self.cursor.execute('SELECT user FROM users')
+        s1 = self.cursor.fetchall()
+        for profile in s1:
+            try:
+                self.cursor.execute("INSERT INTO 'tests' ('user') VALUES (?)",(profile[0],))
+                self.connect.commit()
+            except sqlite3.IntegrityError:
+                pass
+        self.cursor.execute('SELECT user FROM users')
+        s1 = self.cursor.fetchall()
+        for profile in s1:
+            try:
+                self.cursor.execute("INSERT INTO 'subjects' ('user') VALUES (?)",(profile[0],))
+                self.connect.commit()
+            except sqlite3.IntegrityError:
+                pass
+        self.cursor.execute('SELECT user FROM users')
+        s1 = self.cursor.fetchall()
+        for profile in s1:
+            try:
+                self.cursor.execute("INSERT INTO 'opinions' ('user') VALUES (?)",(profile[0],))
+                self.connect.commit()
+            except sqlite3.IntegrityError:
+                pass
+
     def close(self):
         self.connect.close()
 
@@ -19,7 +45,7 @@ class Client(DATABASE):
         self.user = user
         try: 
             self.cursor.execute("INSERT INTO 'users' ('user') VALUES (?)",(self.user,))
-            self.cursor.execute(f"UPDATE users SET password = {password} WHERE user = '{self.user}'")
+            self.cursor.execute(f"UPDATE users SET password = {password} WHERE user = '{self.user}'") # Работает только с числами
         except sqlite3.IntegrityError:
             print('Login už existuje. Zkuste jiný.')
             self.add_user(str(input('Login:')), str(input('Password:')))
@@ -34,7 +60,7 @@ class Client(DATABASE):
         return user_id.fetchone()[0]
 
     def login(self):
-        loginned = []
+        global login
         login = str(input('Login:'))
         password = str(input('Password:'))
         self.cursor.execute(f"SELECT user FROM users WHERE user = '{login}'")
@@ -42,13 +68,14 @@ class Client(DATABASE):
             self.cursor.execute(f"SELECT password FROM users WHERE user = '{login}'")
             check_password = str(self.cursor.fetchone()[0])
             if check_password == password:
-                pass # add to loginned
-                return bool(len(loginned)) # РФАБОТАЕТ
-
+                return login
             else:
-                pass
+                print('Nespravné heslo.')
+                self.login()
         else:
-            pass
+            print('Takový login neexistuje. Udělejte registaci:')
+            self.add_user(str(input('Login:')), str(input('Password:'))) 
+        return None
 
 class Subject:
     def __init__(self,name, code, kred, stat):
@@ -122,11 +149,8 @@ class Data(DATABASE):
         return parts_subjectives
 
     def add_subject(self,subject):
-        pass
-        """
-        EDIT HERE!!!
-        FOR ADMINS 
-        """
+        ''' Klient přidává svoje předměty'''
+        
 
     
 
@@ -136,15 +160,40 @@ class Data(DATABASE):
 laga = Subject('Lineární algebra','laga', 7, 40); subjects.append(laga)
 uela = Subject('Úvod do elektrotechniky','uela', 4, 5); subjects.append(uela)
 ma1a = Subject('Matematická analýza','ma1a', 6, 20); subjects.append(ma1a)
+subjects_list = [laga, uela, ma1a]
 
-allkredits = 7 + 4 + 6
-allstats = 40 + 5 + 20
+allkredits = 7 + 4 + 6 # ПОСЧИТАТЬ ЧЕРЕЗ ИНИЦИАЛИЗОВАННЫЕ ПРЕДМЕТЫ
+allstats = 40 + 5 + 20 # -//-
 
 #################################################################################
 database = DATABASE('database.db')
 client = Client('database.db')
 data = Data('database.db')
 
+def subjects_init():
+    database.cursor.execute(f"SELECT * FROM subjects WHERE user = '{login}'")
+    k = -1
+    for bod in database.cursor.fetchall()[0]:
+        k = k + 1
+        if k == 0 or k == 1:
+            pass
+        elif bod == None:
+            pass
+        else:
+            subjects.append(subjects_list[k-2])
+
+
+
 while True:
-    client.login()
-    
+    """Client autorization"""    
+    #logining = client.login()
+    autorize = client.login()
+    if str(autorize) == login:
+        print('Hello, {}'.format(autorize))
+        database.synch_tables()
+        subjects_init()
+        break
+
+while True:
+    pass
+    cmd = str(input('cmd:'))
