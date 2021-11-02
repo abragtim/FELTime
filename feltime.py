@@ -87,6 +87,11 @@ class Client(DATABASE):
         database.cursor.execute(f"UPDATE subjects SET {subject} = '1' WHERE user = '{login}'")
         database.connect.commit()
         data.add_subjective_opinion(subject)
+        for i in range(len(subjects)):
+            del subjects[i]
+        subjects_init()
+        data.default_test_result()
+        database.reconnect()
         print('Úspěšně')
 
 class Subject:
@@ -95,6 +100,9 @@ class Subject:
         self.code = code
         self.kred = kred #pocet kreditu
         self.stat = stat #statistika uspechu
+
+    def kod(self):
+        return self.code
 
     def kredits(self):
         return self.kred
@@ -115,8 +123,8 @@ class Subject:
         return part
 
     def jadro_v2(self):
-        a = tests()
-        b = subjective()
+        a = data.tests()
+        b = data.subjective()
         func_results = []
         subj_results = []
         for i in a:
@@ -144,11 +152,22 @@ class Data(DATABASE):
         opinion = int(input('Jaký máte pocit z tohoto předmětu? Ohodnoťte svůj pocit od 1 do 10 (1 - vůbec mi nejde; 10 - zvládám uplně všechno):'))
         data.cursor.execute(f"UPDATE opinions SET {predmet} = '{opinion}' WHERE user = '{login}'")
         data.connect.commit()
-        
+
+    def default_test_result(self): 
+        database.reconnect()
+        for subject in subjects:
+            set = subject.kod()
+            data.cursor.execute(f"SELECT {set} FROM opinions WHERE user = '{login}'")
+            fetch = data.cursor.fetchone()[0]*10
+            data.cursor.execute(f"UPDATE tests SET {set} = '{fetch}' WHERE user = '{login}'")
+            data.connect.commit()
+
     def subjective(self): 
         scores = []
         for subject in subjects:
-            subject.score = int(input('Jaký máte pocit ze předmětu {}? Ohodnoťte svůj pocit od 1 do 10 (1 - vůbec mi nejde; 10 - zvládám uplně všechno):'.format(subject.name)))
+            data.cursor.execute(f"SELECT {subject.kod()} FROM opinions WHERE user = '{login}'")
+            fetch = data.cursor.fetchone()[0]
+            subject.score = fetch
             scores.append(subject.score)
         for subject in subjects:
             subject.procent = subject.score/sum(scores)*100 
@@ -179,12 +198,12 @@ class Data(DATABASE):
 ################################################################################
 
 '''Subjects: *kod predmetu* = Subject(*pocet kreditu*, *procent NEuspechu*):'''
-BAB31AF1 = Subject('Základy anatomie a fyziologie I','BAB31AF1', 4, 10); #subjects.append(BAB31AF1)
+BAB31AF1 = Subject('Základy anatomie a fyziologie I','BAB31AF1', 4, 10); 
 B0B01LAGA = Subject('Lineární algebra','B0B01LAGA', 7, 30); 
 B2B15UELA = Subject('Úvod do elektrotechniky','B2B15UELA', 4, 10); 
 B0B01MA1A = Subject('Matematická analýza','B0B01MA1A', 6, 17); 
 BAB37ZPR = Subject('Základy programování','BAB37ZPR', 6, 10); 
-subjects_list = [BAB31AF1, B0B01LAGA, B2B15UELA, B0B01MA1A, BAB37ZPR]
+subjects_list = [BAB31AF1, B0B01LAGA, B0B01MA1A, B2B15UELA,BAB37ZPR]
 
 #################################################################################
 database = DATABASE('database.db')
@@ -230,6 +249,14 @@ while True:
     if cmd == '/opinion':
         data.add_subjective_opinion()
         database.reconnect()
+    if cmd == '/adm_subj':
+        print(data.subjective())
+    if cmd =='/adm_jadro_v2':
+        for subject in subjects:
+            print(subject.jadro_v2())
+    if cmd =='/adm_jadro_v1':
+        for subject in subjects:
+            print(subject.jadro_v1())
 
     if cmd =='/exit':
         exit()
