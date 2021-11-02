@@ -240,6 +240,7 @@ while True:
         database.reconnect()
         break
 
+''' 
 while True:
     for subject in subjects:
         print('> {}:'.format(subject.name),subject.jadro_v2(),'%')
@@ -255,3 +256,77 @@ while True:
         database.reconnect()
     if cmd =='/exit':
         exit()
+'''
+
+for subject in subjects:
+    print('> {}:'.format(subject.name),subject.jadro_v2(),'%')
+cmd = str(input('cmd:'))
+if cmd == '/zapis':
+    client.add_subjects()
+    database.reconnect()
+if cmd == '/test_result':
+    data.add_test_result()
+    database.reconnect()
+if cmd == '/opinion':
+    data.add_subjective_opinion()
+    database.reconnect()
+if cmd =='/exit':
+    exit()
+
+import datetime
+allhours = 56
+for subject in subjects:
+    subject.time = allhours*subject.jadro_v2()/100
+    subject.number = int(subject.time//1.5)
+    subject.list = []
+    subject.list.append(subject.time)
+    file = open('organize.txt','a')
+    file.write('{}:yyyy-mm-dd-hh-mm \n'.format(subject.name)*subject.number)
+
+file.close()
+input()
+delta = datetime.timedelta(hours = 1,minutes = 30)
+file = open('organize.txt','r')
+dates = []
+while True:
+    line = file.readline()
+    try:
+        lom = line.index(':')
+    except ValueError:
+        break
+    name = line[:lom]
+    date_vstup = line[lom+1:].replace('-',' ').split()
+    date = datetime.datetime(int(date_vstup[0]), int(date_vstup[1]), int(date_vstup[2]), int(date_vstup[3]), int(date_vstup[4]))
+    dates.append([name,date])
+file.close()
+
+sorted_dates = [[],[],[],[],[],[],[]]
+for i in range(len(dates)):
+    if datetime.datetime.weekday(dates[i][1]) == 0:
+        sorted_dates[0].append(dates[i])
+    if datetime.datetime.weekday(dates[i][1]) == 1:
+        sorted_dates[1].append(dates[i])
+    if datetime.datetime.weekday(dates[i][1]) == 2:
+        sorted_dates[2].append(dates[i])
+    if datetime.datetime.weekday(dates[i][1]) == 3:
+        sorted_dates[3].append(dates[i])
+    if datetime.datetime.weekday(dates[i][1]) == 4:
+        sorted_dates[4].append(dates[i])
+    if datetime.datetime.weekday(dates[i][1]) == 5:
+        sorted_dates[5].append(dates[i])
+    if datetime.datetime.weekday(dates[i][1]) == 6:
+        sorted_dates[6].append(dates[i])
+    else:
+        continue
+
+cal = open('calendar.txt','a') 
+weekdays = ['MONDAY','TUESDAY','WENSDAY','THURSADY','FRIDAY','SATURDAY','SUNDAY']
+for j in range(7):
+    cal.write('{}:\n'.format(weekdays[j]))
+    cal.write('--------------------------------------------------------------------\n')
+    for i in range(len(sorted_dates[j])):
+        cal.write('....................{}: {} - {}\n'.format(sorted_dates[j][i][0], sorted_dates[j][i][1],sorted_dates[j][i][1] + delta))
+cal.close()
+
+
+
