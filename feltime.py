@@ -83,12 +83,12 @@ class Client(DATABASE):
         return None
 
     def add_subjects(self):
+        for i in range(len(subjects)):
+            del subjects[0]
         subject = str(input('Uveďte kod předmětu, který je zapsán v osobním rozvrhu:'))
         database.cursor.execute(f"UPDATE subjects SET {subject} = '1' WHERE user = '{login}'")
         database.connect.commit()
         data.add_subjective_opinion(subject)
-        for i in range(len(subjects)):
-            del subjects[i]
         subjects_init()
         data.default_test_result()
         database.reconnect()
@@ -182,7 +182,9 @@ class Data(DATABASE):
     def tests(self): 
         bods = []
         for subject in subjects:
-            subject.bod = int(input('Jaký máte poslední výsledek ze předmětu "{}"? Uveďte výsledek v procentech (P.S. Jestli nemáte žádný výsledek, uveďte v procentech svůj subjektivní pocit ze předmětu):'.format(subject.name)))
+            data.cursor.execute(f"SELECT {subject.kod()} FROM tests WHERE user = '{login}'")
+            fetch = data.cursor.fetchone()[0]
+            subject.bod = fetch
             bods.append(subject.bod)
         for subject in subjects:
             subject.procent = subject.bod/sum(bods)*100 
@@ -239,6 +241,8 @@ while True:
         break
 
 while True:
+    for subject in subjects:
+        print('> {}:'.format(subject.name),subject.jadro_v2(),'%')
     cmd = str(input('cmd:'))
     if cmd == '/zapis':
         client.add_subjects()
@@ -249,17 +253,5 @@ while True:
     if cmd == '/opinion':
         data.add_subjective_opinion()
         database.reconnect()
-    if cmd == '/adm_subj':
-        print(data.subjective())
-    if cmd =='/adm_jadro_v2':
-        for subject in subjects:
-            print(subject.jadro_v2())
-    if cmd =='/adm_jadro_v1':
-        for subject in subjects:
-            print(subject.jadro_v1())
-
     if cmd =='/exit':
         exit()
-
-
-
