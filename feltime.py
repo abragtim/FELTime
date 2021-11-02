@@ -5,8 +5,13 @@ subjects = []
 class DATABASE:
 
     def __init__(self, file_db):
+        self.file_db = file_db
         self.connect = sqlite3.connect(file_db)
         self.cursor = self.connect.cursor()
+
+    def reconnect(self):
+        self.close()
+        self.__init__('{}'.format(self.file_db))
 
     def synch_tables(self):
         self.cursor.execute('SELECT user FROM users')
@@ -81,6 +86,7 @@ class Client(DATABASE):
         subject = str(input('Uveďte kod předmětu, který je zapsán v osobním rozvrhu:'))
         database.cursor.execute(f"UPDATE subjects SET {subject} = '1' WHERE user = '{login}'")
         database.connect.commit()
+        data.add_subjective_opinion(subject)
         print('Úspěšně')
 
 class Subject:
@@ -124,12 +130,21 @@ class Data(DATABASE):
     def __init__(self, file_db):
         super().__init__(file_db)
 
-    def add_test_result(self): # database is locked 
+    def add_test_result(self):
+        database.reconnect()
         predmet = str(input('Uveďte kod předmětu:'))
-        result = int(input('Jaký máte výsledek z tohoto předmětu?'))
+        result = int(input('Jaký máte výsledek (v procentech) z tohoto předmětu?'))
         data.cursor.execute(f"UPDATE tests SET {predmet} = '{result}' WHERE user = '{login}'")
         data.connect.commit()
 
+    def add_subjective_opinion(self, predmet=None):
+        if predmet == None:
+            predmet = str(input('Uveďte kod předmětu:'))
+        database.reconnect()
+        opinion = int(input('Jaký máte pocit z tohoto předmětu? Ohodnoťte svůj pocit od 1 do 10 (1 - vůbec mi nejde; 10 - zvládám uplně všechno):'))
+        data.cursor.execute(f"UPDATE opinions SET {predmet} = '{opinion}' WHERE user = '{login}'")
+        data.connect.commit()
+        
     def subjective(self): 
         scores = []
         for subject in subjects:
@@ -159,12 +174,7 @@ class Data(DATABASE):
             part_subjective = subject.jadro_v1() * subject.delta_multiply
             parts_subjectives[subject] = part_subjective
         return parts_subjectives
-
-    def add_subject(self,subject):
-        ''' Klient přidává svoje předměty'''
         
-
-    
 
 ################################################################################
 
@@ -175,9 +185,6 @@ B2B15UELA = Subject('Úvod do elektrotechniky','B2B15UELA', 4, 10);
 B0B01MA1A = Subject('Matematická analýza','B0B01MA1A', 6, 17); 
 BAB37ZPR = Subject('Základy programování','BAB37ZPR', 6, 10); 
 subjects_list = [BAB31AF1, B0B01LAGA, B2B15UELA, B0B01MA1A, BAB37ZPR]
-
-allkredits = 7 + 4 + 6 # ПОСЧИТАТЬ ЧЕРЕЗ ИНИЦИАЛИЗОВАННЫЕ ПРЕДМЕТЫ
-allstats = 40 + 5 + 20 # -//-
 
 #################################################################################
 database = DATABASE('database.db')
@@ -196,7 +203,10 @@ def subjects_init(): # Доделать
             pass
         elif bod == 1:
             subjects.append(subjects_list[k-2])
-
+    global allkredits
+    allkredits = sum([subject.kredits() for subject in subjects])
+    global allstats
+    allstats = sum([subject.statistics() for subject in subjects]) # ПРОВЕРИТЬ ПОТОМ. ЗДЕСЬ СУММА НЕУСПЕХА
 
 while True:
     """Client autorization"""    
@@ -206,14 +216,23 @@ while True:
         print('Hello, {}'.format(autorize))
         database.synch_tables()
         subjects_init()
+        database.reconnect()
         break
 
 while True:
     cmd = str(input('cmd:'))
     if cmd == '/zapis':
         client.add_subjects()
+        database.reconnect()
     if cmd == '/test_result':
         data.add_test_result()
+        database.reconnect()
+    if cmd == '/opinion':
+        data.add_subjective_opinion()
+        database.reconnect()
+
+    if cmd =='/exit':
+        exit()
 
 
 
