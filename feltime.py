@@ -45,7 +45,7 @@ class Client(DATABASE):
         self.user = user
         try: 
             self.cursor.execute("INSERT INTO 'users' ('user') VALUES (?)",(self.user,))
-            self.cursor.execute(f"UPDATE users SET password = {password} WHERE user = '{self.user}'") # Работает только с числами
+            self.cursor.execute(f"UPDATE users SET password = '{password}' WHERE user = '{self.user}'")
         except sqlite3.IntegrityError:
             print('Login už existuje. Zkuste jiný.')
             self.add_user(str(input('Login:')), str(input('Password:')))
@@ -76,6 +76,12 @@ class Client(DATABASE):
             print('Takový login neexistuje. Udělejte registaci:')
             self.add_user(str(input('Login:')), str(input('Password:'))) 
         return None
+
+    def add_subjects(self):
+        subject = str(input('Uveďte kod předmětu, který je zapsán v osobním rozvrhu:'))
+        database.cursor.execute(f"UPDATE subjects SET {subject} = '1' WHERE user = '{login}'")
+        database.connect.commit()
+        print('Úspěšně')
 
 class Subject:
     def __init__(self,name, code, kred, stat):
@@ -118,7 +124,13 @@ class Data(DATABASE):
     def __init__(self, file_db):
         super().__init__(file_db)
 
-    def subjective(): 
+    def add_test_result(self): # database is locked 
+        predmet = str(input('Uveďte kod předmětu:'))
+        result = int(input('Jaký máte výsledek z tohoto předmětu?'))
+        data.cursor.execute(f"UPDATE tests SET {predmet} = '{result}' WHERE user = '{login}'")
+        data.connect.commit()
+
+    def subjective(self): 
         scores = []
         for subject in subjects:
             subject.score = int(input('Jaký máte pocit ze předmětu {}? Ohodnoťte svůj pocit od 1 do 10 (1 - vůbec mi nejde; 10 - zvládám uplně všechno):'.format(subject.name)))
@@ -133,7 +145,7 @@ class Data(DATABASE):
             parts_subjectives[subject] = part_subjective
         return parts_subjectives
 
-    def tests(): 
+    def tests(self): 
         bods = []
         for subject in subjects:
             subject.bod = int(input('Jaký máte poslední výsledek ze předmětu "{}"? Uveďte výsledek v procentech (P.S. Jestli nemáte žádný výsledek, uveďte v procentech svůj subjektivní pocit ze předmětu):'.format(subject.name)))
@@ -157,10 +169,12 @@ class Data(DATABASE):
 ################################################################################
 
 '''Subjects: *kod predmetu* = Subject(*pocet kreditu*, *procent NEuspechu*):'''
-laga = Subject('Lineární algebra','laga', 7, 40); subjects.append(laga)
-uela = Subject('Úvod do elektrotechniky','uela', 4, 5); subjects.append(uela)
-ma1a = Subject('Matematická analýza','ma1a', 6, 20); subjects.append(ma1a)
-subjects_list = [laga, uela, ma1a]
+BAB31AF1 = Subject('Základy anatomie a fyziologie I','BAB31AF1', 4, 10); #subjects.append(BAB31AF1)
+B0B01LAGA = Subject('Lineární algebra','B0B01LAGA', 7, 30); 
+B2B15UELA = Subject('Úvod do elektrotechniky','B2B15UELA', 4, 10); 
+B0B01MA1A = Subject('Matematická analýza','B0B01MA1A', 6, 17); 
+BAB37ZPR = Subject('Základy programování','BAB37ZPR', 6, 10); 
+subjects_list = [BAB31AF1, B0B01LAGA, B2B15UELA, B0B01MA1A, BAB37ZPR]
 
 allkredits = 7 + 4 + 6 # ПОСЧИТАТЬ ЧЕРЕЗ ИНИЦИАЛИЗОВАННЫЕ ПРЕДМЕТЫ
 allstats = 40 + 5 + 20 # -//-
@@ -170,7 +184,8 @@ database = DATABASE('database.db')
 client = Client('database.db')
 data = Data('database.db')
 
-def subjects_init():
+def subjects_init(): # Доделать
+    '''Inicializace svých předmětů userem'''
     database.cursor.execute(f"SELECT * FROM subjects WHERE user = '{login}'")
     k = -1
     for bod in database.cursor.fetchall()[0]:
@@ -179,9 +194,8 @@ def subjects_init():
             pass
         elif bod == None:
             pass
-        else:
+        elif bod == 1:
             subjects.append(subjects_list[k-2])
-
 
 
 while True:
@@ -195,5 +209,11 @@ while True:
         break
 
 while True:
-    pass
     cmd = str(input('cmd:'))
+    if cmd == '/zapis':
+        client.add_subjects()
+    if cmd == '/test_result':
+        data.add_test_result()
+
+
+
