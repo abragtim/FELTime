@@ -1,72 +1,34 @@
-Základy anatomie a fyziologie I:yyyy-mm-dd-hh-mm 
-Základy anatomie a fyziologie I:yyyy-mm-dd-hh-mm 
-Základy anatomie a fyziologie I:yyyy-mm-dd-hh-mm 
-Základy anatomie a fyziologie I:yyyy-mm-dd-hh-mm 
-Základy anatomie a fyziologie I:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Matematická analýza:yyyy-mm-dd-hh-mm 
-Matematická analýza:yyyy-mm-dd-hh-mm 
-Matematická analýza:yyyy-mm-dd-hh-mm 
-Matematická analýza:yyyy-mm-dd-hh-mm 
-Matematická analýza:yyyy-mm-dd-hh-mm 
-Matematická analýza:yyyy-mm-dd-hh-mm 
-Matematická analýza:yyyy-mm-dd-hh-mm 
-Matematická analýza:yyyy-mm-dd-hh-mm 
-Úvod do elektrotechniky:yyyy-mm-dd-hh-mm 
-Úvod do elektrotechniky:yyyy-mm-dd-hh-mm 
-Úvod do elektrotechniky:yyyy-mm-dd-hh-mm 
-Úvod do elektrotechniky:yyyy-mm-dd-hh-mm 
-Úvod do elektrotechniky:yyyy-mm-dd-hh-mm 
-Základy programování:yyyy-mm-dd-hh-mm 
-Základy programování:yyyy-mm-dd-hh-mm 
-Základy programování:yyyy-mm-dd-hh-mm 
-Základy programování:yyyy-mm-dd-hh-mm 
-Základy programování:yyyy-mm-dd-hh-mm 
-Základy programování:yyyy-mm-dd-hh-mm 
-Základy anatomie a fyziologie I:yyyy-mm-dd-hh-mm 
-Základy anatomie a fyziologie I:yyyy-mm-dd-hh-mm 
-Základy anatomie a fyziologie I:yyyy-mm-dd-hh-mm 
-Základy anatomie a fyziologie I:yyyy-mm-dd-hh-mm 
-Základy anatomie a fyziologie I:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Lineární algebra:yyyy-mm-dd-hh-mm 
-Matematická analýza:yyyy-mm-dd-hh-mm 
-Matematická analýza:yyyy-mm-dd-hh-mm 
-Matematická analýza:yyyy-mm-dd-hh-mm 
-Matematická analýza:yyyy-mm-dd-hh-mm 
-Matematická analýza:yyyy-mm-dd-hh-mm 
-Matematická analýza:yyyy-mm-dd-hh-mm 
-Matematická analýza:yyyy-mm-dd-hh-mm 
-Matematická analýza:yyyy-mm-dd-hh-mm 
-Úvod do elektrotechniky:yyyy-mm-dd-hh-mm 
-Úvod do elektrotechniky:yyyy-mm-dd-hh-mm 
-Úvod do elektrotechniky:yyyy-mm-dd-hh-mm 
-Úvod do elektrotechniky:yyyy-mm-dd-hh-mm 
-Úvod do elektrotechniky:yyyy-mm-dd-hh-mm 
-Základy programování:yyyy-mm-dd-hh-mm 
-Základy programování:yyyy-mm-dd-hh-mm 
-Základy programování:yyyy-mm-dd-hh-mm 
-Základy programování:yyyy-mm-dd-hh-mm 
-Základy programování:yyyy-mm-dd-hh-mm 
-Základy programování:yyyy-mm-dd-hh-mm 
+Základy anatomie a fyziologie I:2021-11-19-19-30 
+Základy anatomie a fyziologie I:2021-11-19-19-30 
+Základy anatomie a fyziologie I:2021-11-19-19-30 
+Základy anatomie a fyziologie I:2021-11-19-19-30  
+Lineární algebra:2021-11-19-19-30  
+Lineární algebra:2021-11-19-19-30 
+Lineární algebra:2021-11-19-19-30 
+Lineární algebra:2021-11-19-19-30 
+Lineární algebra:2021-11-19-19-30 
+Lineární algebra:2021-11-19-19-30 
+Lineární algebra:2021-11-19-19-30 
+Lineární algebra:2021-11-19-19-30 
+Lineární algebra:2021-11-19-19-30 
+Lineární algebra:2021-11-19-19-30 
+Lineární algebra:2021-11-19-19-30 
+Matematická analýza:2021-11-19-19-30 
+Matematická analýza:2021-11-19-19-30 
+Matematická analýza:2021-11-19-19-30 
+Matematická analýza:2021-11-19-19-30 
+Matematická analýza:2021-11-19-19-30 
+Matematická analýza:2021-11-19-19-30 
+Matematická analýza:2021-11-19-19-30 
+Matematická analýza:2021-11-19-19-30 
+Matematická analýza:2021-11-19-19-30 
+Úvod do elektrotechniky:2021-11-19-19-30 
+Úvod do elektrotechniky:2021-11-19-19-30 
+Úvod do elektrotechniky:2021-11-19-19-30 
+Úvod do elektrotechniky:2021-11-19-19-30 
+Základy programování:2021-11-19-19-30 
+Základy programování:2021-11-19-19-30 
+Základy programování:2021-11-19-19-30 
+Základy programování:2021-11-19-19-30 
+Základy programování:2021-11-19-19-30 
+Základy programování:2021-11-19-19-30 
