@@ -314,6 +314,7 @@ def work():
                     finally:
                         i = i + 1
                 delta_cal = delta_cal[0:len(delta_cal)-2-i]
+                #finish_date = datetime.datetime(y,m,d,h,min,s)
                 # CONTINUE
 
 def menu():
