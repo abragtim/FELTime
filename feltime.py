@@ -229,63 +229,21 @@ def subjects_init(): # Доделать
     global allstats
     allstats = sum([subject.statistics() for subject in subjects]) # ПРОВЕРИТЬ ПОТОМ. ЗДЕСЬ СУММА НЕУСПЕХА
 
-while True:
-    """Client autorization"""    
-    #logining = client.login()
-    autorize = client.login()
-    if str(autorize) == login:
-        print('Hello, {}'.format(autorize))
-        database.synch_tables()
-        subjects_init()
-        database.reconnect()
-        break
-
-''' 
-while True:
-    for subject in subjects:
-        print('> {}:'.format(subject.name),subject.jadro_v2(),'%')
-    cmd = str(input('cmd:'))
-    if cmd == '/zapis':
-        client.add_subjects()
-        database.reconnect()
-    if cmd == '/test_result':
-        data.add_test_result()
-        database.reconnect()
-    if cmd == '/opinion':
-        data.add_subjective_opinion()
-        database.reconnect()
-    if cmd =='/exit':
-        exit()
-'''
-
-for subject in subjects:
-    print('> {}:'.format(subject.name),subject.jadro_v2(),'%')
-cmd = str(input('cmd:'))
-if cmd == '/zapis':
-    client.add_subjects()
-    database.reconnect()
-if cmd == '/test_result':
-    data.add_test_result()
-    database.reconnect()
-if cmd == '/opinion':
-    data.add_subjective_opinion()
-    database.reconnect()
-if cmd =='/exit':
-    exit()
-
 import datetime
 def organize():
-    allhours = 56 # INTERACTIVE
+    allhours = int(input('Kolik hodin v týdnu budete studovat?:'))
+    file = open('organize.txt','w')
+    file.write('')
+    file.close()
+    file = open('organize.txt','a')
     for subject in subjects:
         subject.time = allhours*subject.jadro_v2()/100
         subject.number = int(subject.time//1.5)
         subject.list = []
         subject.list.append(subject.time)
-        file = open('organize.txt','a')
         file.write('{}:yyyy-mm-dd-hh-mm \n'.format(subject.name)*subject.number)
-
     file.close()
-    input()
+    input('Proveďte změny v soubru organize.txt. Po ukončení stiskněte ENTER')
     delta = datetime.timedelta(hours = 1,minutes = 30)
     file = open('organize.txt','r')
     dates = []
@@ -327,10 +285,68 @@ def organize():
         cal.write('{}:\n'.format(weekdays[j]))
         cal.write('--------------------------------------------------------------------\n')
         for i in range(len(sorted_dates[j])):
-            cal.write('....................{}: {} - {}\n'.format(sorted_dates[j][i][0], sorted_dates[j][i][1],sorted_dates[j][i][1] + delta))
+            minute = sorted_dates[j][i][1].minute
+            if len(str(minute)) == 1:
+                minute = '0' + str(minute)
+            cal.write('   {}:{} | {}: {} - {}\n'.format(sorted_dates[j][i][1].hour,minute,sorted_dates[j][i][0], sorted_dates[j][i][1],sorted_dates[j][i][1] + delta))
     cal.close()
+    print('Váš rozvhrh je v souboru calendar.txt')
 
-organize()
+def work():
+    today = datetime.datetime.today()
+    today = datetime.datetime(today.year, today.month, today.day, today.hour, today.minute, second=0)
+    with open('calendar.txt','r') as file:
+        lines = file.readlines()
+        for line in lines:
+            try:
+                line.index(str(today.year))
+            except ValueError:
+                continue
+            if bool(line.index(str(today.year))) == True:
+                delta_cal = line[line.index(str(today.year)):]
+                i = 0
+                while i != -1:
+                    try:
+                       int(delta_cal[len(delta_cal)-2-i])
+                       i = -2
+                    except ValueError:
+                        pass
+                    finally:
+                        i = i + 1
+                delta_cal = delta_cal[0:len(delta_cal)-2-i]
+                # CONTINUE
+
+def menu():
+    while True:
+        """Client autorization"""   
+        autorize = client.login()
+        if str(autorize) == login:
+            print('Hello, {}'.format(autorize))
+            database.synch_tables()
+            subjects_init()
+            database.reconnect()
+            break
 
 
+    while True:
+        for subject in subjects:
+            print('> {}:'.format(subject.name),subject.jadro_v2(),'%')
+        cmd = str(input('cmd:'))
+        if cmd == '/zapis':
+            client.add_subjects()
+            database.reconnect()
+        if cmd == '/test_result':
+            data.add_test_result()
+            database.reconnect()
+        if cmd == '/opinion':
+            data.add_subjective_opinion()
+            database.reconnect()
+        if cmd == '/organize':
+            organize()
+        if cmd == '/work':
+            pass
+        if cmd =='/exit':
+            exit()
 
+work()
+#menu()
