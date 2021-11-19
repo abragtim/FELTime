@@ -314,7 +314,10 @@ def work():
                     finally:
                         i = i + 1
                 delta_cal = delta_cal[0:len(delta_cal)-2-i]
-                #finish_date = datetime.datetime(y,m,d,h,min,s)
+                start_date = datetime.datetime(int(delta_cal[:delta_cal.index('-')]),int(delta_cal[delta_cal.index('-')+1:delta_cal.index('-',delta_cal.index('-')+1)]),int(delta_cal[delta_cal.index('-',delta_cal.index('-')+1)+1:delta_cal.index(' ')]),int(delta_cal[delta_cal.index(' ')+1:delta_cal.index(' ')+3]),int(delta_cal[delta_cal.index(' ')+4:delta_cal.index(' ')+6]),int(delta_cal[delta_cal.index(' ')+7:delta_cal.index(' ')+9]))
+                delta_cal = delta_cal.replace(str(start_date),'')
+                delta_cal = delta_cal[3:]
+                finish_date = datetime.datetime(int(delta_cal[:delta_cal.index('-')]),int(delta_cal[delta_cal.index('-')+1:delta_cal.index('-',delta_cal.index('-')+1)]),int(delta_cal[delta_cal.index('-',delta_cal.index('-')+1)+1:delta_cal.index(' ')]),int(delta_cal[delta_cal.index(' ')+1:delta_cal.index(' ')+3]),int(delta_cal[delta_cal.index(' ')+4:delta_cal.index(' ')+6]),int(delta_cal[delta_cal.index(' ')+7:delta_cal.index(' ')+9]))
                 # CONTINUE
 
 def menu():
@@ -349,5 +352,5 @@ def menu():
         if cmd =='/exit':
             exit()
 
-#work()
-menu()
+work()
+#menu()
