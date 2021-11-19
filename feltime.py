@@ -349,5 +349,5 @@ def menu():
         if cmd =='/exit':
             exit()
 
-work()
-#menu()
+#work()
+menu()
