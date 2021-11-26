@@ -1,5 +1,6 @@
 import sqlite3
 from types import NoneType
+import datetime
 
 subjects = []
 
@@ -290,7 +291,6 @@ def subjects_init():
     global allstats
     allstats = sum([subject.statistics() for subject in subjects])
 
-import datetime
 def organize():
     '''Oraganize calendar'''
     allhours = int(input('Kolik hodin v týdnu budete studovat?:'))
@@ -354,6 +354,69 @@ def organize():
     cal.close()
     print('Váš rozvhrh je v souboru calendar.txt')
 
+def new_organize():
+    '''Organizece casu'''
+    #Priprava predmetu k organizaci:
+    allhours = int(input('Kolik hodin v týdnu budete studovat?'))
+    file = open('organize.txt','w')
+    file.write('')
+    file.close()
+    file = open('organize.txt','a')
+    for subject in subjects:
+        dluh = (subject.progress_check() - 100)/100*allhours
+        subject.time = allhours*subject.jadro_v2()/100 - dluh
+        subject.number = int(subject.time//1.5)
+        #subject.list = []
+        #subject.list.append(subject.time)
+        file.write('{}:{}-{}-dd-hh-mm \n'.format(subject.name, datetime.datetime.today().year, datetime.datetime.today().month)*subject.number)
+    file.close()
+    input('Proveďte změny v soubru organize.txt. Po ukončení stiskněte ENTER')
+    #Analýza po organizaci:
+    delta = datetime.timedelta(hours = 1,minutes = 30)
+    file = open('organize.txt','r')
+    dates = []
+    while True:
+        line = file.readline()
+        try:
+            lom = line.index(':')
+        except ValueError:
+            break
+        name = line[:lom]
+        date_vstup = line[lom+1:].replace('-',' ').split()
+        date = datetime.datetime(int(date_vstup[0]), int(date_vstup[1]), int(date_vstup[2]), int(date_vstup[3]), int(date_vstup[4]))
+        dates.append([name,date])
+    file.close()
+    def dates_sorting(dates):
+        sorted_dates = []
+        i = 0
+        pamet = None
+        activate_pamet = False
+        while True:
+            if i == len(dates)-1:
+                print('1')
+                i = 0
+                activate_pamet = True
+            if dates[i][1] > dates[i+1][1]:
+                print('2')
+                dates[i], dates[i+1] = dates[i+1], dates[i]
+                i += 1
+            if [dates] == pamet:
+                print('3')
+                break
+            if activate_pamet == True:
+                print('4')
+                pamet = [dates]
+                activate_pamet == False
+        for m in range(7):
+            for i in range(len(dates)):
+                if datetime.datetime.weekday(dates[i][1]) == m:
+                    sorted_dates[m].append(dates[i])
+        #del dates, pamet, activate_pamet, i
+        return sorted_dates
+    sorted_dates = dates_sorting(dates)
+    print(sorted_dates)
+
+
 def work():
     '''Study stopwatch'''
     today = datetime.datetime.today()
@@ -388,19 +451,19 @@ def work():
                         if current_activity == subject.name:
                             current_activity = subject
                             ask = str(input('Váše aktuální aktivita je {}?(yes/no):'.format(current_activity.name)))
-                else:
-                    ask = 'no'
-                if ask == 'no':
-                    while status == True:
-                        ask = str(input('Uveďte název předmětu, nad kterým teď pracujete?:'))
-                        for subject in subjects:
-                            if bool(ask == subject.name) == True:
-                                current_activity = subject
-                                status = False
-                        if status == False:
-                            status = False
-                            break
-                        print('Nenašli jmse takový název. Zkuste znovu.')
+        if ask != 'yes':
+            ask = 'no'
+        if ask == 'no':
+            while status == True:
+                ask = str(input('Uveďte název předmětu, nad kterým teď pracujete?:'))
+                for subject in subjects:
+                    if bool(ask == subject.name) == True:
+                        current_activity = subject
+                        status = False
+                if status == False:
+                    status = False
+                    break
+                print('Nenašli jmse takový název. Zkuste znovu.')
     start_time = today
     input('Hodně štěstí ve studiu! Po ukončení studia stiskňete ENTER.')
     finish_time = datetime.datetime.today()
@@ -447,6 +510,8 @@ def menu():
             organize()
         if cmd == '/work':
             work()
+        if cmd == '/new':
+            new_organize()
         if cmd =='/exit':
             exit()
 

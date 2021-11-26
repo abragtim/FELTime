@@ -1,33 +1,3 @@
-Základy anatomie a fyziologie I:2021-11-20-20-00
-Základy anatomie a fyziologie I:2021-11-24-11-00 
-Základy anatomie a fyziologie I:2021-11-21-17-00
-Základy anatomie a fyziologie I:2021-11-21-20-00 
-Lineární algebra:2021-11-22-16-15 
-Lineární algebra:2021-11-25-16-16 
-Lineární algebra:2021-11-26-11-00 
-Lineární algebra:2021-11-20-10-00 
-Lineární algebra:2021-11-20-11-50 
-Lineární algebra:2021-11-22-11-00 
-Lineární algebra:2021-11-22-17-00 
-Lineární algebra:2021-11-22-20-00 
-Lineární algebra:2021-11-23-11-00 
-Lineární algebra:2021-11-24-14-00 
-Matematická analýza:2021-11-23-9-15 
-Matematická analýza:2021-11-25-11-00 
-Matematická analýza:2021-11-25-14-30 
-Matematická analýza:2021-11-20-15-00 
-Matematická analýza:2021-11-20-17-00 
-Matematická analýza:2021-11-21-10-00 
-Matematická analýza:2021-11-21-12-00 
-Matematická analýza:2021-11-21-15-00 
-Matematická analýza:2021-11-22-20-00 
-Matematická analýza:2021-11-23-16-30 
-Matematická analýza:2021-11-23-20-00 
-Matematická analýza:2021-11-24-20-30 
-Úvod do elektrotechniky:2021-11-26-12-45 
-Základy programování:2021-11-22-11-00 
-Základy programování:2021-11-23-12-45 
-Základy programování:2021-11-22-12-40 
-Základy programování:2021-11-22-14-40 
-Základy programování:2021-11-26-15-10 
-Základy programování:2021-11-26-17-00 
+Matematická analýza I:2021-11-dd-hh-mm 
+Matematická analýza I:2021-11-dd-hh-mm 
+Základy programování:2021-11-dd-hh-mm 
