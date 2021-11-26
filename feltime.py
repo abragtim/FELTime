@@ -100,16 +100,19 @@ class Client(DATABASE):
 
     def add_subjects(self):
         '''Add subject to the user's subject-list'''
-        for i in range(len(subjects)):
-            del subjects[0]
-        subject = str(input('Uveďte kod předmětu, který je zapsán v osobním rozvrhu:'))
-        database.cursor.execute(f"UPDATE subjects SET {subject} = '1' WHERE user = '{login}'")
-        database.connect.commit()
-        data.add_subjective_opinion(subject)
-        subjects_init()
-        data.default_test_result()
-        database.reconnect()
-        print('Úspěšně')
+        try:
+            for i in range(len(subjects)):
+                del subjects[0]
+            subject = str(input('Uveďte kod předmětu, který je zapsán v osobním rozvrhu:'))
+            database.cursor.execute(f"UPDATE subjects SET {subject} = '1' WHERE user = '{login}'")
+            database.connect.commit()
+            data.add_subjective_opinion(subject)
+            subjects_init()
+            data.default_test_result()
+            database.reconnect()
+            print('Úspěšně')
+        except sqlite3.OperationalError:
+            print('ERROR: Takový predmět zapsat nelze.')
 
 class Subject:
     def __init__(self,name, code, kred, stat):
@@ -176,20 +179,35 @@ class Data(DATABASE):
 
     def add_test_result(self):
         ''' Add test result'''
-        database.reconnect()
-        predmet = str(input('Uveďte kod předmětu:'))
-        result = int(input('Jaký máte výsledek (v procentech) z tohoto předmětu?'))
-        data.cursor.execute(f"UPDATE tests SET {predmet} = '{result}' WHERE user = '{login}'")
-        data.connect.commit()
+        try: 
+            database.reconnect()
+            predmet = str(input('Uveďte kod předmětu:'))
+            result = int(input('Jaký máte výsledek (v procentech) z tohoto předmětu?'))
+            if result < 0 or result > 100:
+                raise sqlite3.OperationalError
+            data.cursor.execute(f"UPDATE tests SET {predmet} = '{result}' WHERE user = '{login}'")
+            data.connect.commit()
+        except sqlite3.OperationalError:
+            print('ERROR: Výsledek nebyl zapsán.')
+        except ValueError:
+            print('ERROR: Používejte celá čísla.')
 
     def add_subjective_opinion(self, predmet=None):
         '''Add subjective feelings'''
-        if predmet == None:
-            predmet = str(input('Uveďte kod předmětu:'))
-        database.reconnect()
-        opinion = int(input('Jaký máte pocit z tohoto předmětu? Ohodnoťte svůj pocit od 1 do 10 (1 - vůbec mi nejde; 10 - zvládám uplně všechno):'))
-        data.cursor.execute(f"UPDATE opinions SET {predmet} = '{opinion}' WHERE user = '{login}'")
-        data.connect.commit()
+        try:
+            if predmet == None:
+                predmet = str(input('Uveďte kod předmětu:'))
+            database.reconnect()
+            opinion = int(input('Jaký máte pocit z tohoto předmětu? Ohodnoťte svůj pocit od 1 do 10 (1 - vůbec mi nejde; 10 - zvládám uplně všechno):'))
+            if opinion <1 or opinion > 10:
+                print('ERROR: Pocit musí být ohodnocen OD 1 DO 10!')
+                raise sqlite3.OperationalError
+            data.cursor.execute(f"UPDATE opinions SET {predmet} = '{opinion}' WHERE user = '{login}'")
+            data.connect.commit()
+        except sqlite3.OperationalError:
+            print('ERROR: Pocit nebyl zapsán.')
+        except ValueError:
+            print('ERROR: Používejte celá čísla.')
 
     def default_test_result(self): 
         '''Before the first test: test_result = feelings * 10'''
@@ -294,7 +312,12 @@ def subjects_init():
 def organize():
     '''Organizece casu'''
     #Priprava predmetu k organizaci:
-    allhours = int(input('Kolik hodin v týdnu budete studovat?: '))
+    try:
+        allhours = int(input('Kolik hodin v týdnu budete studovat?: '))
+        if allhours <= 0:
+            raise ValueError
+    except ValueError:
+        print('ERROR: Používejte celá kladná čísla.')
     file = open('organize.txt','w')
     file.write('')
     file.close()
@@ -456,4 +479,7 @@ def menu():
         if cmd =='/exit':
             exit()
 
-menu()
+try:
+    menu()
+except:
+    print('ERROR')
