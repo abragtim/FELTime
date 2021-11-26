@@ -292,72 +292,9 @@ def subjects_init():
     allstats = sum([subject.statistics() for subject in subjects])
 
 def organize():
-    '''Oraganize calendar'''
-    allhours = int(input('Kolik hodin v týdnu budete studovat?:'))
-    file = open('organize.txt','w')
-    file.write('')
-    file.close()
-    file = open('organize.txt','a')
-    for subject in subjects:
-        subject.time = allhours*subject.jadro_v2()/100
-        subject.number = int(subject.time//1.5)
-        subject.list = []
-        subject.list.append(subject.time)
-        file.write('{}:yyyy-mm-dd-hh-mm \n'.format(subject.name)*subject.number)
-    file.close()
-    input('Proveďte změny v soubru organize.txt. Po ukončení stiskněte ENTER')
-    delta = datetime.timedelta(hours = 1,minutes = 30)
-    file = open('organize.txt','r')
-    dates = []
-    while True:
-        line = file.readline()
-        try:
-            lom = line.index(':')
-        except ValueError:
-            break
-        name = line[:lom]
-        date_vstup = line[lom+1:].replace('-',' ').split()
-        date = datetime.datetime(int(date_vstup[0]), int(date_vstup[1]), int(date_vstup[2]), int(date_vstup[3]), int(date_vstup[4]))
-        dates.append([name,date])
-    file.close()
-
-    dates.sort()
-    sorted_dates = [[],[],[],[],[],[],[]]
-    for i in range(len(dates)):
-        if datetime.datetime.weekday(dates[i][1]) == 0:
-            sorted_dates[0].append(dates[i])
-        if datetime.datetime.weekday(dates[i][1]) == 1:
-            sorted_dates[1].append(dates[i])
-        if datetime.datetime.weekday(dates[i][1]) == 2:
-            sorted_dates[2].append(dates[i])
-        if datetime.datetime.weekday(dates[i][1]) == 3:
-            sorted_dates[3].append(dates[i])
-        if datetime.datetime.weekday(dates[i][1]) == 4:
-            sorted_dates[4].append(dates[i])
-        if datetime.datetime.weekday(dates[i][1]) == 5:
-            sorted_dates[5].append(dates[i])
-        if datetime.datetime.weekday(dates[i][1]) == 6:
-            sorted_dates[6].append(dates[i])
-        else:
-            continue
-
-    cal = open('calendar.txt','w')
-    weekdays = ['MONDAY','TUESDAY','WENSDAY','THURSADY','FRIDAY','SATURDAY','SUNDAY']
-    for j in range(7):
-        cal.write('{}:\n'.format(weekdays[j]))
-        cal.write('--------------------------------------------------------------------\n')
-        for i in range(len(sorted_dates[j])):
-            minute = sorted_dates[j][i][1].minute
-            if len(str(minute)) == 1:
-                minute = '0' + str(minute)
-            cal.write('   {}:{} | {}: {} - {}\n'.format(sorted_dates[j][i][1].hour,minute,sorted_dates[j][i][0], sorted_dates[j][i][1],sorted_dates[j][i][1] + delta))
-    cal.close()
-    print('Váš rozvhrh je v souboru calendar.txt')
-
-def new_organize():
     '''Organizece casu'''
     #Priprava predmetu k organizaci:
-    allhours = int(input('Kolik hodin v týdnu budete studovat?'))
+    allhours = int(input('Kolik hodin v týdnu budete studovat?: '))
     file = open('organize.txt','w')
     file.write('')
     file.close()
@@ -366,8 +303,6 @@ def new_organize():
         dluh = (subject.progress_check() - 100)/100*allhours
         subject.time = allhours*subject.jadro_v2()/100 - dluh
         subject.number = int(subject.time//1.5)
-        #subject.list = []
-        #subject.list.append(subject.time)
         file.write('{}:{}-{}-dd-hh-mm \n'.format(subject.name, datetime.datetime.today().year, datetime.datetime.today().month)*subject.number)
     file.close()
     input('Proveďte změny v soubru organize.txt. Po ukončení stiskněte ENTER')
@@ -387,35 +322,44 @@ def new_organize():
         dates.append([name,date])
     file.close()
     def dates_sorting(dates):
-        sorted_dates = []
+        sorted_dates = [[], [], [], [], [], [], []]
         i = 0
         pamet = None
         activate_pamet = False
         while True:
             if i == len(dates)-1:
-                print('1')
                 i = 0
                 activate_pamet = True
             if dates[i][1] > dates[i+1][1]:
-                print('2')
                 dates[i], dates[i+1] = dates[i+1], dates[i]
                 i += 1
+            else:
+                i += 1
             if [dates] == pamet:
-                print('3')
                 break
             if activate_pamet == True:
-                print('4')
                 pamet = [dates]
                 activate_pamet == False
         for m in range(7):
             for i in range(len(dates)):
                 if datetime.datetime.weekday(dates[i][1]) == m:
                     sorted_dates[m].append(dates[i])
-        #del dates, pamet, activate_pamet, i
+        del dates, pamet, activate_pamet, i
         return sorted_dates
     sorted_dates = dates_sorting(dates)
-    print(sorted_dates)
-
+    #Add to calendar.txt
+    cal = open('calendar.txt','w')
+    weekdays = ['MONDAY','TUESDAY','WENSDAY','THURSADY','FRIDAY','SATURDAY','SUNDAY']
+    for j in range(7):
+        cal.write('{}:\n'.format(weekdays[j]))
+        cal.write('--------------------------------------------------------------------\n')
+        for i in range(len(sorted_dates[j])):
+            minute = sorted_dates[j][i][1].minute
+            if len(str(minute)) == 1:
+                minute = '0' + str(minute)
+            cal.write('   {}:{} | {}: {} - {}\n'.format(sorted_dates[j][i][1].hour,minute,sorted_dates[j][i][0], sorted_dates[j][i][1],sorted_dates[j][i][1] + delta))
+    cal.close()
+    print('Váš rozvhrh je v souboru calendar.txt')
 
 def work():
     '''Study stopwatch'''
@@ -492,10 +436,9 @@ def menu():
             database.reconnect()
             break
 
-
     while True:
         for subject in subjects:
-            print('> [{}%] {}:'.format(int(subject.progress_check()//1),subject.name),subject.jadro_v2(),'%') #pridat rozdeleni sil (def progress(): pass)
+            print('> [{}%] {} ({}):'.format(int(subject.progress_check()//1),subject.name, subject.code),subject.jadro_v2(),'%')
         cmd = str(input('cmd:'))
         if cmd == '/zapis':
             client.add_subjects()
@@ -510,8 +453,6 @@ def menu():
             organize()
         if cmd == '/work':
             work()
-        if cmd == '/new':
-            new_organize()
         if cmd =='/exit':
             exit()
 
