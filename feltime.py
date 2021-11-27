@@ -479,7 +479,7 @@ def menu():
         if cmd =='/exit':
             exit()
 
-try:
-    menu()
-except:
-    print('ERROR')
+#try:
+menu()
+#except:
+    #print('ERROR')

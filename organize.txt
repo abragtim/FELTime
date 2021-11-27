@@ -1,4 +1,2 @@
-Matematická analýza I:2021-11-26-21-30 
-Matematická analýza I:2021-11-29-11-00 
-Matematická analýza I:2021-11-28-12-00 
-Základy programování:2021-11-28-14-00 
+Lineární algebra:2021-11-21-18-72 
+Lineární algebra:2021-11-89-25-03 
