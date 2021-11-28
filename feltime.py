@@ -183,14 +183,16 @@ class Data(DATABASE):
             database.reconnect()
             predmet = str(input('Uveďte kod předmětu:'))
             result = int(input('Jaký máte výsledek (v procentech) z tohoto předmětu?'))
-            if result < 0 or result > 100:
+            if result <= 0 or result > 100:
                 raise sqlite3.OperationalError
             data.cursor.execute(f"UPDATE tests SET {predmet} = '{result}' WHERE user = '{login}'")
             data.connect.commit()
         except sqlite3.OperationalError:
             print('ERROR: Výsledek nebyl zapsán.')
+            return None
         except ValueError:
             print('ERROR: Používejte celá čísla.')
+            return None
 
     def add_subjective_opinion(self, predmet=None):
         '''Add subjective feelings'''
@@ -206,8 +208,10 @@ class Data(DATABASE):
             data.connect.commit()
         except sqlite3.OperationalError:
             print('ERROR: Pocit nebyl zapsán.')
+            return None
         except ValueError:
             print('ERROR: Používejte celá čísla.')
+            return None
 
     def default_test_result(self): 
         '''Before the first test: test_result = feelings * 10'''
