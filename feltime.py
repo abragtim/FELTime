@@ -318,6 +318,7 @@ def organize():
             raise ValueError
     except ValueError:
         print('ERROR: Používejte celá kladná čísla.')
+        return None
     file = open('organize.txt','w')
     file.write('')
     file.close()
@@ -325,51 +326,60 @@ def organize():
     for subject in subjects:
         dluh = (subject.progress_check() - 100)/100*allhours
         subject.time = allhours*subject.jadro_v2()/100 - dluh
+        if subject.progress_check() == 0:
+            subject.time = allhours*subject.jadro_v2()/100
         subject.number = int(subject.time//1.5)
         file.write('{}:{}-{}-dd-hh-mm \n'.format(subject.name, datetime.datetime.today().year, datetime.datetime.today().month)*subject.number)
     file.close()
     input('Proveďte změny v soubru organize.txt. Po ukončení stiskněte ENTER')
     #Analýza po organizaci:
-    delta = datetime.timedelta(hours = 1,minutes = 30)
-    file = open('organize.txt','r')
-    dates = []
-    while True:
-        line = file.readline()
-        try:
-            lom = line.index(':')
-        except ValueError:
-            break
-        name = line[:lom]
-        date_vstup = line[lom+1:].replace('-',' ').split()
-        date = datetime.datetime(int(date_vstup[0]), int(date_vstup[1]), int(date_vstup[2]), int(date_vstup[3]), int(date_vstup[4]))
-        dates.append([name,date])
-    file.close()
-    def dates_sorting(dates):
-        sorted_dates = [[], [], [], [], [], [], []]
-        i = 0
-        pamet = None
-        activate_pamet = False
+    try:
+        delta = datetime.timedelta(hours = 1,minutes = 30)
+        file = open('organize.txt','r')
+        dates = []
         while True:
-            if i == len(dates)-1:
-                i = 0
-                activate_pamet = True
-            if dates[i][1] > dates[i+1][1]:
-                dates[i], dates[i+1] = dates[i+1], dates[i]
-                i += 1
-            else:
-                i += 1
-            if [dates] == pamet:
+            line = file.readline()
+            try:
+                lom = line.index(':')
+            except ValueError:
                 break
-            if activate_pamet == True:
-                pamet = [dates]
-                activate_pamet == False
-        for m in range(7):
-            for i in range(len(dates)):
-                if datetime.datetime.weekday(dates[i][1]) == m:
-                    sorted_dates[m].append(dates[i])
-        del dates, pamet, activate_pamet, i
-        return sorted_dates
-    sorted_dates = dates_sorting(dates)
+            name = line[:lom]
+            date_vstup = line[lom+1:].replace('-',' ').split()
+            date = datetime.datetime(int(date_vstup[0]), int(date_vstup[1]), int(date_vstup[2]), int(date_vstup[3]), int(date_vstup[4]))
+            dates.append([name,date])
+        file.close()
+        def dates_sorting(dates):
+            sorted_dates = [[], [], [], [], [], [], []]
+            i = 0
+            pamet = None
+            activate_pamet = False
+            while True:
+                if i == len(dates)-1:
+                    i = 0
+                    activate_pamet = True
+                if dates[i][1] > dates[i+1][1]:
+                    dates[i], dates[i+1] = dates[i+1], dates[i]
+                    i += 1
+                else:
+                    i += 1
+                if [dates] == pamet:
+                    break
+                if activate_pamet == True:
+                    pamet = [dates]
+                    activate_pamet == False
+            for m in range(7):
+                for i in range(len(dates)):
+                    if datetime.datetime.weekday(dates[i][1]) == m:
+                        sorted_dates[m].append(dates[i])
+            del dates, pamet, activate_pamet, i
+            return sorted_dates
+        sorted_dates = dates_sorting(dates)
+    except ValueError:
+        print('ERROR: Chyba úprav v souboru.')
+        return None
+    except IndexError:
+        print('ERROR: Chyba úprav v souboru.')
+        return None
     #Add to calendar.txt
     cal = open('calendar.txt','w')
     weekdays = ['MONDAY','TUESDAY','WENSDAY','THURSADY','FRIDAY','SATURDAY','SUNDAY']
@@ -391,6 +401,7 @@ def work():
     status  = True
     with open('calendar.txt','r') as file:
         lines = file.readlines()
+        ask = None
         for line in lines:
             try:
                 line.index(str(today.year))
