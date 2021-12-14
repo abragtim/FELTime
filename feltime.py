@@ -1,11 +1,11 @@
+#from os import X_OK
 import sqlite3
-from types import NoneType
+#from types import NoneType
 import datetime
 
 subjects = []
 
 class DATABASE:
-
     def __init__(self, file_db):
         self.file_db = file_db
         self.connect = sqlite3.connect(file_db)
@@ -104,6 +104,8 @@ class Client(DATABASE):
             for i in range(len(subjects)):
                 del subjects[0]
             subject = str(input('Uveďte kod předmětu, který je zapsán v osobním rozvrhu:'))
+            if subject not in subjects_list:
+                raise sqlite3.OperationalError
             database.cursor.execute(f"UPDATE subjects SET {subject} = '1' WHERE user = '{login}'")
             database.connect.commit()
             data.add_subjective_opinion(subject)
@@ -264,7 +266,7 @@ class Data(DATABASE):
         database.reconnect()
         data.cursor.execute(f"SELECT {subject.kod()} FROM progress WHERE user = '{login}'")
         fetch = data.cursor.fetchone()[0]
-        if isinstance(fetch,NoneType) == True:
+        if isinstance(fetch,type(None)) == True:
             fetch = 0
         seconds = int(fetch) + seconds
         data.cursor.execute(f"UPDATE progress SET {subject.kod()} = '{seconds}' WHERE user = '{login}'")
