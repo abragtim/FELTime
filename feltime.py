@@ -461,6 +461,7 @@ def work():
     data.add_progress(current_activity,delta_time)
 
 def progress():
+    '''Users progress (return None)'''
     for subject in subjects:
         print(int(subject.progress_check()//1))
 
@@ -495,8 +496,15 @@ def menu():
             work()
         if cmd =='/exit':
             exit()
+        if cmd == '/help':
+            print('''
+            /zapis - zapsat předmět;
+            /test_result - přidat výsledek testu;
+            /opinion - přidat subjektivní pocit z předmětu;
+            /organize - výtvořit plan na týden;
+            /work - progress timer;
+            /exit - ukončit program.
+            ''')
+            input()
 
-#try:
 menu()
-#except:
-    #print('ERROR')
