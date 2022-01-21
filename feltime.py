@@ -104,7 +104,8 @@ class Client(DATABASE):
             for i in range(len(subjects)):
                 del subjects[0]
             subject = str(input('Uveďte kod předmětu, který je zapsán v osobním rozvrhu:'))
-            if subject not in subjects_list:
+            subjects_list_codes_str = [sub.code for sub in subjects_list]
+            if subject not in subjects_list_codes_str:
                 raise sqlite3.OperationalError
             database.cursor.execute(f"UPDATE subjects SET {subject} = '1' WHERE user = '{login}'")
             database.connect.commit()
