@@ -1,6 +1,7 @@
-from subjects import *
 import sqlite3
+from subjects import subjects_exists
 
+''' ------------------------------- Classes ------------------------------- '''
 
 class DATABASE:
     def __init__(self, file_db):
@@ -103,6 +104,7 @@ class Client(DATABASE):
         else:
             print('Takový login neexistuje. Udělejte registaci:')
             self.add_user(str(input('Login:')), str(input('Password:')))
+            self.login()
         return None
 
     def add_subjects(self):
@@ -131,8 +133,8 @@ class Subject:
     def __init__(self, name, code, kred, stat):
         self.name = name
         self.code = code
-        self.kred = kred  # pocet kreditu
-        self.stat = stat  # statistika uspechu
+        self.kred = kred  # credits number
+        self.stat = stat  # success statistics
         self.progress = 0
 
     def kod(self):
@@ -147,23 +149,23 @@ class Subject:
         '''Return % of failers'''
         return self.stat
 
-    def jadro_v1_kred(self):
-        '''Jadro v.1: kredit-part'''
+    def core_v1_kred(self):
+        '''core v.1: kredit-part'''
         kredit_part = self.kredits()/allkredits*100
         return kredit_part
 
-    def jadro_v1_stat(self):
-        '''Jadro v.2: failers-part'''
+    def core_v1_stat(self):
+        '''core v.2: failers-part'''
         statistics_part = self.statistics()/allstats*100
         return statistics_part
 
-    def jadro_v1(self):
-        '''Jadro v.1'''
-        part = ((self.jadro_v1_kred() + self.jadro_v1_stat())/2)
+    def core_v1(self):
+        '''core v.1'''
+        part = ((self.core_v1_kred() + self.core_v1_stat())/2)
         return part
 
-    def jadro_v2(self):
-        '''Jadro v.2'''
+    def core_v2(self):
+        '''core v.2'''
         a = data.tests()
         b = data.subjective()
         func_results = []
@@ -181,7 +183,7 @@ class Subject:
         sum = data.get_progress_information()
         if sum != 0:
             self.progress = self.progress*100/sum
-            procent_progress = self.progress*100/self.jadro_v2()
+            procent_progress = self.progress*100/self.core_v2()
         else:
             self.progress = 0
             procent_progress = 0
@@ -245,7 +247,7 @@ class Data(DATABASE):
             data.connect.commit()
 
     def subjective(self):
-        '''Jadro v.2: subjective-part'''
+        '''core v.2: subjective-part'''
         scores = []
         for subject in subjects:
             data.cursor.execute(
@@ -259,12 +261,12 @@ class Data(DATABASE):
         parts_subjectives = {}
         for subject in subjects:
             subject.delta_multiply = 1 + (goal_procent - subject.procent)/100
-            part_subjective = subject.jadro_v1() * subject.delta_multiply
+            part_subjective = subject.core_v1() * subject.delta_multiply
             parts_subjectives[subject] = part_subjective
         return parts_subjectives
 
     def tests(self):
-        '''Jadro v.2: tests-part'''
+        '''core v.2: tests-part'''
         bods = []
         for subject in subjects:
             data.cursor.execute(
@@ -278,7 +280,7 @@ class Data(DATABASE):
         parts_subjectives = {}
         for subject in subjects:
             subject.delta_multiply = 1 + (goal_procent - subject.procent)/100
-            part_subjective = subject.jadro_v1() * subject.delta_multiply
+            part_subjective = subject.core_v1() * subject.delta_multiply
             parts_subjectives[subject] = part_subjective
         return parts_subjectives
 
@@ -308,11 +310,19 @@ class Data(DATABASE):
         return sum
 
 
+''' ---------------------------- Global params ---------------------------- '''
 database = DATABASE('database.db')
 client = Client('database.db')
 data = Data('database.db')
 
+subjects = []
+subjects_list = [Subject(subjects_exists[i][0],
+                subjects_exists[i][1],
+                subjects_exists[i][2],
+                subjects_exists[i][3]) for i in range(len(subjects_exists))]
 
+
+''' ------------------------------ Function ------------------------------ '''
 def subjects_init():
     '''Inicialization of user's subjects'''
     database.cursor.execute(f"SELECT * FROM subjects WHERE user = '{login}'")
