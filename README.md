@@ -1,6 +1,6 @@
-Program FELTime je určen k plánování studijního času. Program hlavně ukazuje v procentech, kolik by měl student věnovat času svým předmětům programu. Pro analýzu program především používá následující data:
-	•	počet kreditů předmětu
-	•	průchodnost předmětem
+Program FELTime je určen k plánování studijního času. Program hlavně ukazuje v procentech, kolik by měl student věnovat času svým předmětům programu. Pro analýzu program především používá následující data:\n
+	•	počet kreditů předmětu\n
+	•	průchodnost předmětem\n
 Taky uživatel koriguje procenty přidáním následujích dat:
 	•	studijní výsledky
 	•	subjektivní pocit z předmětu
