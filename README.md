@@ -5,13 +5,13 @@
 1. počet kreditů předmětu
 2. průchodnost předmětem </br>
 
-<h4>Taky uživatel koriguje procenty přidáním následujích dat:</h4>
+<h3>Taky uživatel koriguje procenty přidáním následujích dat:</h3>
 
 1. studijní výsledky
 2. subjektivní pocit z předmětu </br>
 
-<h4>Pro používání programu uživatel musí uvést svůj login a heslo (případně projít registrací) </br>
-Program obsahuje následující funkcionál, který může vyvolat uživatel:</h4>
+<h3>Pro používání programu uživatel musí uvést svůj login a heslo (případně projít registrací) </br>
+Program obsahuje následující funkcionál, který může vyvolat uživatel:</h3>
 
 - /help | Podívat se na funkcionál 
 - /zapis | Zapsat předmět
@@ -21,6 +21,6 @@ Program obsahuje následující funkcionál, který může vyvolat uživatel:</h
 - /work | Zapnout timer, který kontroluje, jestli se uživatel řídí časovým plánem
 - /exit | Ukončit program
 
-<h4>Použizí:</h4>
+<h3>Použizí:</h3>
 
 	python3 feltime.py
