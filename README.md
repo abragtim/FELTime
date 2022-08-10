@@ -21,6 +21,6 @@ Program obsahuje následující funkcionál, který může vyvolat uživatel:</h
 - /work | Zapnout timer, který kontroluje, jestli se uživatel řídí časovým plánem
 - /exit | Ukončit program
 
-<h3>Použizí:</h3>
+<h3>Použití:</h3>
 
 	python3 feltime.py
