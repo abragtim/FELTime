@@ -16,7 +16,7 @@ def main():
             print('> [{}%] {} ({}):'.format(int(subject.progress_check()//1),
                                             subject.name,
                                             subject.code),
-                  subject.jadro_v2(), '%')
+                  subject.core_v2(), '%')
 
         cmd = str(input('cmd:'))
         if cmd == '/zapis':
@@ -116,9 +116,9 @@ def _prepare_subject():
     file = open('organize.txt', 'a')
     for subject in subjects:
         debt = (subject.progress_check() - 100)/100*allhours
-        subject.time = allhours*subject.jadro_v2()/100 - debt
+        subject.time = allhours*subject.core_v2()/100 - debt
         if subject.progress_check() == 0:
-            subject.time = allhours*subject.jadro_v2()/100
+            subject.time = allhours*subject.core_v2()/100
         subject.number = int(subject.time//1.5)
         file.write('{}:{}-{}-dd-hh-mm \n'.format(subject.name,
                    datetime.datetime.today().year, datetime.datetime.today().month)*subject.number)
