@@ -22,6 +22,7 @@ Program obsahuje následující funkcionál, který může vyvolat uživatel:</h
 - /exit | Ukončit program
 
 <h3> Available subjects: </h3>
+
 - BAB31AF1 Základy anatomie a fyziologie I
 - B0B01LAGA Lineární algebra
 - B0B01MA1A Matematická analýza I
