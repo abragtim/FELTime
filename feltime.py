@@ -277,4 +277,5 @@ def _get_current_activity(today):
     return current_activity
 
 ''' ----------------------------------------------------------------------- '''
-main()
+if __name__ == '__main__':
+    main()
