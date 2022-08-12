@@ -153,12 +153,13 @@ def _organization_alalyzing():
                 if i == len(dates)-1:
                     i = 0
                     activate_storage = True
-                #TODO: Index Error. Case: just 1 date in dates
-                if dates[i][1] > dates[i+1][1]:
+
+                if len(dates) > 1 and dates[i][1] > dates[i+1][1]:
                     dates[i], dates[i+1] = dates[i+1], dates[i]
                     i += 1
                 else:
                     i += 1
+                    
                 if [dates] == storage:
                     break
                 if activate_storage == True:
