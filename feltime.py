@@ -1,19 +1,19 @@
 import datetime
 from database import *
 
-''' ---------------------------- Main process ---------------------------- '''
+
 def main():
-    '''Interactive menu'''
-    # client autorization"""
-    autorize = client.login()
-    print('Hello, {}'.format(autorize))
+    """Interactive menu"""
+    # client authorization
+    authorize = client.login()
+    print('Hello, {}'.format(authorize))
     database.synch_tables()
     subjects_init()
     database.reconnect()
 
     while True:
         for subject in subjects:
-            print('> [{}%] {} ({}):'.format(int(subject.progress_check()//1),
+            print('> [{}%] {} ({}):'.format(int(subject.progress_check() // 1),
                                             subject.name,
                                             subject.code),
                   subject.core_v2(), '%')
@@ -55,14 +55,15 @@ def main():
 
 ''' ------------------------------ Functions ------------------------------ '''
 
+
 def organize():
-    ''' Time organization '''
+    """ Time organization """
     # prepare subjects before organization:
     if not _prepare_subject():
         return None
     input('Proveďte změny v soubru organize.txt. Po ukončení stiskněte ENTER')
 
-    # analize after organization:
+    # analyze after organization:
     dates, delta = _organization_alalyzing()
     if dates is None:
         return None
@@ -73,7 +74,7 @@ def organize():
 
 
 def work():
-    '''Study stopwatch'''
+    """Study stopwatch"""
     today = datetime.datetime.today()
     today = datetime.datetime(today.year, today.month,
                               today.day, today.hour, today.minute, second=0)
@@ -95,12 +96,13 @@ def work():
 
 
 def progress():
-    '''Users progress (return None)'''
+    """Users progress (return None)"""
     for subject in subjects:
-        print(int(subject.progress_check()//1))
+        print(int(subject.progress_check() // 1))
 
 
 ''' ------------------------- Tools for organize() ------------------------ '''
+
 
 def _prepare_subject():
     try:
@@ -115,13 +117,15 @@ def _prepare_subject():
     file.close()
     file = open('organize.txt', 'a')
     for subject in subjects:
-        debt = (subject.progress_check() - 100)/100*allhours
-        subject.time = allhours*subject.core_v2()/100 - debt
+        debt = (subject.progress_check() - 100) / 100 * allhours
+        subject.time = allhours * subject.core_v2() / 100 - debt
         if subject.progress_check() == 0:
-            subject.time = allhours*subject.core_v2()/100
-        subject.number = int(subject.time//1.5)
+            subject.time = allhours * subject.core_v2() / 100
+        subject.number = int(subject.time // 1.5)
         file.write('{}:{}-{}-dd-hh-mm \n'.format(subject.name,
-                   datetime.datetime.today().year, datetime.datetime.today().month)*subject.number)
+                                                 datetime.datetime.today().year,
+                                                 datetime.datetime.today().month
+                                                 ) * subject.number)
     file.close()
     return True
 
@@ -138,9 +142,11 @@ def _organization_alalyzing():
             except ValueError:
                 break
             name = line[:lom]
-            date_input = line[lom+1:].replace('-', ' ').split()
-            date = datetime.datetime(int(date_input[0]), int(date_input[1]), int(
-                date_input[2]), int(date_input[3]), int(date_input[4]))
+            date_input = line[lom + 1:].replace('-', ' ').split()
+            date = datetime.datetime(int(date_input[0]), int(date_input[1]),
+                                     int(
+                                         date_input[2]), int(date_input[3]),
+                                     int(date_input[4]))
             dates.append([name, date])
         file.close()
 
@@ -150,21 +156,21 @@ def _organization_alalyzing():
             storage = None
             activate_storage = False
             while True:
-                if i == len(dates)-1:
+                if i == len(dates) - 1:
                     i = 0
                     activate_storage = True
 
-                if len(dates) > 1 and dates[i][1] > dates[i+1][1]:
-                    dates[i], dates[i+1] = dates[i+1], dates[i]
+                if len(dates) > 1 and dates[i][1] > dates[i + 1][1]:
+                    dates[i], dates[i + 1] = dates[i + 1], dates[i]
                     i += 1
                 else:
                     i += 1
-                    
+
                 if [dates] == storage:
                     break
-                if activate_storage == True:
+                if activate_storage:
                     storage = [dates]
-                    activate_storage == False
+                    activate_storage = False
             for m in range(7):
                 for i in range(len(dates)):
                     if datetime.datetime.weekday(dates[i][1]) == m:
@@ -188,16 +194,22 @@ def _cal_adding(dates, delta):
     for j in range(7):
         cal.write('{}:\n'.format(weekdays[j]))
         cal.write(
-            '--------------------------------------------------------------------\n')
+            '-----------------------------------'
+            '---------------------------------\n')
         for i in range(len(dates[j])):
             minute = dates[j][i][1].minute
             if len(str(minute)) == 1:
                 minute = '0' + str(minute)
-            cal.write('   {}:{} | {}: {} - {}\n'.format(dates[j][i][1].hour, minute,
-                      dates[j][i][0], dates[j][i][1], dates[j][i][1] + delta))
+            cal.write(
+                '   {}:{} | {}: {} - {}\n'.format(dates[j][i][1].hour, minute,
+                                                  dates[j][i][0],
+                                                  dates[j][i][1],
+                                                  dates[j][i][1] + delta))
     cal.close()
 
+
 ''' --------------------------- Tools for work() -------------------------- '''
+
 
 def _get_current_activity(today):
     status = True
@@ -211,70 +223,74 @@ def _get_current_activity(today):
                 line.index(str(today.year))
             except ValueError:
                 continue
-            if bool(line.index(str(today.year))) == True:
+            if bool(line.index(str(today.year))):
                 delta_cal = line[line.index(str(today.year)):]
                 i = 0
                 while i != -1:
                     try:
-                        int(delta_cal[len(delta_cal)-2-i])
+                        int(delta_cal[len(delta_cal) - 2 - i])
                         i = -2
                     except ValueError:
                         pass
                     finally:
                         i = i + 1
-                delta_cal = delta_cal[0:len(delta_cal)-2-i]
-                start_date = datetime.datetime(int(delta_cal[:delta_cal.index('-')]),
-                                               int(delta_cal[delta_cal.index(
-                                                   '-')+1:delta_cal.index('-',
-                                                                          delta_cal.index('-')+1)]),
-                                               int(delta_cal[delta_cal.index('-',
-                                                                             delta_cal.index(
-                                                                                 '-')+1)+1:delta_cal.index(' ')]),
-                                               int(delta_cal[delta_cal.index(
-                                                   ' ')+1:delta_cal.index(' ')+3]),
-                                               int(delta_cal[delta_cal.index(
-                                                   ' ')+4:delta_cal.index(' ')+6]),
-                                               int(delta_cal[delta_cal.index(' ')+7:delta_cal.index(' ')+9]))
+                delta_cal = delta_cal[0:len(delta_cal) - 2 - i]
+
+                def _set_date(delta_cal):
+                    """ Set start/finish date"""
+                    ret_date = datetime.datetime(
+                        int(delta_cal[:delta_cal.index('-')]),
+                        int(delta_cal[delta_cal.index(
+                            '-') + 1:delta_cal.index('-',
+                                                     delta_cal.index(
+                                                         '-') + 1)]),
+                        int(delta_cal[delta_cal.index('-',
+                                                      delta_cal.index(
+                                                          '-') + 1) + 1:delta_cal.index(
+                            ' ')]),
+                        int(delta_cal[delta_cal.index(
+                            ' ') + 1:delta_cal.index(' ') + 3]),
+                        int(delta_cal[delta_cal.index(
+                            ' ') + 4:delta_cal.index(' ') + 6]),
+                        int(delta_cal[
+                            delta_cal.index(' ') + 7:delta_cal.index(' ') + 9]))
+                    return ret_date
+
+                start_date = _set_date(delta_cal)
                 delta_cal = delta_cal.replace(str(start_date), '')
                 delta_cal = delta_cal[3:]
-                finish_date = datetime.datetime(int(delta_cal[:delta_cal.index('-')]),
-                                                int(delta_cal[delta_cal.index(
-                                                    '-')+1:delta_cal.index('-', delta_cal.index('-')+1)]),
-                                                int(delta_cal[delta_cal.index('-', delta_cal.index(
-                                                    '-')+1)+1:delta_cal.index(' ')]),
-                                                int(delta_cal[delta_cal.index(
-                                                    ' ')+1:delta_cal.index(' ')+3]),
-                                                int(delta_cal[delta_cal.index(
-                                                    ' ')+4:delta_cal.index(' ')+6]),
-                                                int(delta_cal[delta_cal.index(' ')+7:delta_cal.index(' ')+9]))
-                if bool(today > start_date) == True and bool(today < finish_date) == True:
+                finish_date = _set_date(delta_cal)
+
+                if bool(today > start_date) is True and bool(
+                        today < finish_date) is True:
                     current_activity = line[line.index(
-                        '|')+2:line.index(':', line.index('|'))]
+                        '|') + 2:line.index(':', line.index('|'))]
                     for subject in subjects:
                         if current_activity == subject.name:
                             current_activity = subject
                             ask = str(
-                                input('Váše aktuální aktivita je {}?(yes/no): '\
-                                    .format(
-                                    current_activity.name)))
+                                input(
+                                    'Váše aktuální aktivita je {}?(yes/no): '.format(
+                                        current_activity.name)))
 
         if ask != 'yes':
             ask = 'no'
         if ask == 'no':
             # there isn't any activity in calendar -> getting from user
-            while status == True:
+            while status:
                 ask = str(
                     input('Uveďte název předmětu, nad kterým teď pracujete?:'))
                 for subject in subjects:
-                    if bool(ask == subject.name) == True:
+                    if bool(ask == subject.name):
                         current_activity = subject
                         status = False
-                if status == False:
-                    status = False
+                if status is False:
                     break
                 print('Nenašli jmse takový název. Zkuste znovu.')
 
     return current_activity
 
+
 ''' ----------------------------------------------------------------------- '''
-main()
+if __name__ == '__main__':
+    main()
